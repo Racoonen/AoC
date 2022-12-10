@@ -1,7 +1,5 @@
 ﻿internal class Program
 {
-
-
     private static void Main(string[] args)
     {
         var matrix = new Matrix();
@@ -52,62 +50,7 @@
             return matrix[row][col];
         }
 
-        public int GetCountOfVisibleTrees()
-        {
-            return matrix.Sum(e => e.Count(t => t.IsVisible));
-        }
-
-        public int GetCountOfVisibleTreesFirst()
-        {
-            var invisibleTrees = new List<Tree>();
-            var result = 0;
-            foreach(var row in matrix)
-            {
-                var highest = GetHighestTreeInRows(row);
-                foreach(var tree in row)
-                {
-                    if (tree.ColIndex > highest.leftTree.ColIndex && tree.ColIndex < highest.rightTree.ColIndex)
-                        invisibleTrees.Add(tree);
-                }
-            }
-
-            foreach(var pos in invisibleTrees.ToList())
-                if(pos.RowIndex == 0 || pos.ColIndex == 0)
-                    invisibleTrees.Remove(pos);
-
-            for(int col =0 ; col < matrix.Count; col++)
-            {
-                var highest = GetHighestTreeInColumn(col);
-                foreach(var possible in invisibleTrees)
-                {
-                    if (possible.RowIndex > highest.topTree.RowIndex && possible.RowIndex < highest.bottomTree.RowIndex)
-                        result++;
-                }
-            }
-
-            return (matrix.Count * matrix.Count)- result;
-        }
-
-        private (Tree topTree, Tree bottomTree) GetHighestTreeInColumn(int columnIndex)
-        {
-            var column = matrix.Select(e => e[columnIndex]);
-            var ordered = column.OrderByDescending(e => e.Size).ThenBy(e => e.RowIndex);
-            var first = ordered.FirstOrDefault();
-            var second = ordered.ElementAt(1);
-            if (first.RowIndex > second.RowIndex)
-                return (second, first);
-            return (first, second);
-        }
-
-        private (Tree leftTree, Tree rightTree) GetHighestTreeInRows(List<Tree> treeRow)
-        {
-            var ordered = treeRow.OrderByDescending(e=> e.Size).ThenBy(e=> e.ColIndex);
-            var first = ordered.FirstOrDefault();
-            var second = ordered.ElementAt(1);
-            if (first.ColIndex > second.ColIndex)
-                return (second, first);
-            return (first, second);
-        }
+        public int GetCountOfVisibleTrees() => matrix.Sum(e => e.Count(t => t.IsVisible));
     }
 
 
@@ -128,7 +71,7 @@
             if (TopTree == null || LeftTree == null || RightTree == null || BottomTree == null)
                 return true;
 
-             bool CheckTree(Tree tree, Func<Tree, Tree> SelectNextTree)
+            bool CheckTree(Tree tree, Func<Tree, Tree> SelectNextTree)
              {
                 while (tree != null)
                 {
