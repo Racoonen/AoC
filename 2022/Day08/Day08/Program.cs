@@ -8,6 +8,7 @@
             matrix.ParseLine(line);
         matrix.InitializeTreesAround();
         Console.WriteLine(matrix.GetCountOfVisibleTrees());
+        Console.WriteLine(matrix.GetHighestScenicScore());
     }
 
     class Matrix
@@ -51,6 +52,8 @@
         }
 
         public int GetCountOfVisibleTrees() => matrix.Sum(e => e.Count(t => t.IsVisible));
+
+        public int GetHighestScenicScore() => matrix.SelectMany(e => e.Where(e => e.IsVisible)).Max(e => e.GetScenicScore());
     }
 
 
@@ -91,6 +94,27 @@
                 result = CheckTree(RightTree, (tree) => tree.RightTree);
 
             return result;
+        }
+
+        public int GetScenicScore()
+        {
+            int CheckTree(Tree tree, Func<Tree, Tree> SelectNextTree)
+            {
+                var result = 0;
+                while (tree != null)
+                {
+                    result++;
+                    if (tree.Size >= Size)
+                        break;
+                    tree = SelectNextTree(tree);
+                }
+                return result;
+            }
+            int range = CheckTree(TopTree, (tree) => tree.TopTree);
+            range *= CheckTree(BottomTree, (tree) => tree.BottomTree);
+            range *= CheckTree(LeftTree, (tree) => tree.LeftTree);
+            range *= CheckTree(RightTree, (tree) => tree.RightTree);
+            return range;
         }
     }
 }
