@@ -2,7 +2,7 @@
 
 Console.WriteLine("First Part.");
 var parser = new Parser();
-var games = File.ReadAllLines("FirstInput.txt").Select(parser.ParseLine).ToList();
+var games = File.ReadAllLines("Inputs.txt").Select(parser.ParseLine).ToList();
 var possiblegames = games.Where(e => e.IsPossible(12, 13, 14)).ToList();
 foreach (var possible in possiblegames)
 {

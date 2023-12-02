@@ -8,10 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="FirstInput.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SecondInput.txt">
+    <None Update="Input.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
