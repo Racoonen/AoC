@@ -1,12 +1,11 @@
-﻿namespace Day01
+﻿namespace Day01;
+
+internal static class StringExtension
 {
-    internal static class StringExtension
+    public static string Reverse(this string s)
     {
-        public static string Reverse(this string s)
-        {
-            char[] charArray = s.ToCharArray();
-            Array.Reverse(charArray);
-            return new string(charArray);
-        }
+        char[] charArray = s.ToCharArray();
+        Array.Reverse(charArray);
+        return new string(charArray);
     }
 }

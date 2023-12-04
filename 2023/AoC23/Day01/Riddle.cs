@@ -1,22 +1,21 @@
-﻿namespace Day01
+﻿namespace Day01;
+
+internal class Riddle
 {
-    internal class Riddle
+    private readonly IReadOnlyCollection<Line> lines;
+
+    public Riddle(IReadOnlyCollection<Line> lines)
     {
-        private readonly IReadOnlyCollection<Line> lines;
+        this.lines = lines ?? throw new ArgumentNullException(nameof(lines));
+    }
 
-        public Riddle(IReadOnlyCollection<Line> lines)
+    internal string Solve()
+    {
+        var result = 0;
+        foreach (var line in lines)
         {
-            this.lines = lines ?? throw new ArgumentNullException(nameof(lines));
+            result += line.GetNumber();
         }
-
-        internal string Solve()
-        {
-            var result = 0;
-            foreach (var line in lines)
-            {
-                result += line.GetNumber();
-            }
-            return result.ToString();
-        }
+        return result.ToString();
     }
 }

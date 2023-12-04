@@ -1,9 +1,8 @@
-﻿namespace Day03
-{
-    internal class Parser
-    {
-        public Matrix Parse(string[] lines) => new Matrix(lines.Select(ParseLine).ToArray());
+﻿namespace Day03;
 
-        private Entry[] ParseLine(string line) => line.Select(e => new Entry(e)).ToArray();
-    }
+internal class Parser
+{
+    public Matrix Parse(string[] lines) => new Matrix(lines.Select(ParseLine).ToArray());
+
+    private Entry[] ParseLine(string line) => line.Select(e => new Entry(e)).ToArray();
 }

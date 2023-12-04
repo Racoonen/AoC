@@ -1,7 +1,6 @@
-﻿namespace Day01.Finder
+﻿namespace Day01.Finder;
+
+internal interface INumberFinder
 {
-    internal interface INumberFinder
-    {
-        string FindNumber(string line);
-    }
+    string FindNumber(string line);
 }

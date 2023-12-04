@@ -1,9 +1,8 @@
-﻿namespace Day01.Finder
+﻿namespace Day01.Finder;
+
+internal enum NumberFinderStrategy
 {
-    internal enum NumberFinderStrategy
-    {
-        Simple,
-        Complex,
-        ReversedComplex
-    }
+    Simple,
+    Complex,
+    ReversedComplex
 }

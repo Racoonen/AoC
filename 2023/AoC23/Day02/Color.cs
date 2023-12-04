@@ -1,9 +1,8 @@
-﻿namespace Day02
+﻿namespace Day02;
+
+internal enum Color
 {
-    internal enum Color
-    {
-        Red,
-        Green,
-        Blue
-    }
+    Red,
+    Green,
+    Blue
 }
