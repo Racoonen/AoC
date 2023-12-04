@@ -15,7 +15,6 @@ internal record Matrix(Entry[][] Entries)
                 var entry = row[columnIndex];
                 if (entry.IsGearMarker)
                 {
-                    //Console.WriteLine($"Gear found at {rowIndex} {columnIndex}");
                     var numbers = new List<long>
                     {
                         GetLeftNumber(rowIndex, columnIndex),
@@ -28,12 +27,7 @@ internal record Matrix(Entry[][] Entries)
                     var validNumbers = numbers.Where(e => e != -1).ToList();
                     if (validNumbers.Count == 2)
                     {
-                        //Console.WriteLine($"Numbers or Gear {validNumbers[0]} {validNumbers[1]}");
                         result += validNumbers[0] * validNumbers[1];
-                    }
-                    else
-                    {
-                        Console.WriteLine($"No Numbers found at {rowIndex} {columnIndex}.");
                     }
                 }
             }
@@ -43,32 +37,69 @@ internal record Matrix(Entry[][] Entries)
 
     private long GetRightNumber(int rowIndex, int columnIndex)
     {
-        return GetNumberOfIndex(rowIndex, columnIndex + 1, out var _);
+        if (rowIndex < 0 && rowIndex >= Entries.Length)
+        {
+            return -1;
+        }
+
+        var index = columnIndex + 1;
+        if (index >= Entries[rowIndex].Length)
+        {
+            return -1;
+        }
+
+        if (Entries[rowIndex][index].IsNumber)
+        {
+            return GetNumberOfIndex(rowIndex, index);
+        }
+        return -1;
     }
 
     private long GetLeftNumber(int rowIndex, int columnIndex)
     {
-        return GetNumberOfIndex(rowIndex, columnIndex - 1, out var _);
+        var index = columnIndex - 1;
+        if (index < 0)
+        {
+            return -1;
+        }
+
+        if (rowIndex > 0 && rowIndex < Entries.Length)
+        {
+            if (Entries[rowIndex][index].IsNumber)
+            {
+                return GetNumberOfIndex(rowIndex, index);
+            }
+        }
+        return -1;
     }
 
-    private long GetNumberOfIndex(int rowIndex, int columnIndex, out int latestIndex)
+    private long GetNumberOfIndex(int rowIndex, int columnIndex)
     {
         var row = Entries[rowIndex];
         var startIndex = columnIndex;
-        latestIndex = startIndex;
 
-        while (startIndex > 0 && row[startIndex].IsNumber)
+        var next = true;
+        while (next)
         {
-            if ((startIndex - 1) > 0 || !row[startIndex - 1].IsNumber)
+            if(startIndex < 0)
             {
+                startIndex++;
                 break;
             }
-            startIndex--;
+            if (row[startIndex].IsNumber)
+            {
+                startIndex--;
+            }
+            else
+            {
+                startIndex++;
+                next = false;
+            }
         }
+
         var builder = new StringBuilder();
         while (startIndex < row.Length && row[startIndex].IsNumber)
         {
-            latestIndex = startIndex;
             builder.Append(row[startIndex].ToString());
             startIndex++;
         }
@@ -78,57 +109,36 @@ internal record Matrix(Entry[][] Entries)
         return -1;
     }
 
-    private long[] GetBottomNumbers(int rowIndex, int columnIndex)
+    private long[] GetUpperNumbers(int rowIndex, int columnIndex) => GetNumbersInLine(rowIndex - 1, columnIndex);
+    private long[] GetBottomNumbers(int rowIndex, int columnIndex) => GetNumbersInLine(rowIndex + 1, columnIndex);
+
+    private long[] GetNumbersInLine(int rowIndex, int columnIndex)
     {
         var result = new List<long>();
-        var bottomRowIndex = rowIndex + 1;
-        if (bottomRowIndex > Entries.Length)
-        {
+        if (rowIndex < 0 || rowIndex >= Entries.Length)
             return result.ToArray();
-        }
-        var row = Entries[bottomRowIndex];
-        var latestIndex = columnIndex;
+
+        var row = Entries[rowIndex];
         if (row[columnIndex].IsNumber)
         {
-            result.Add(GetNumberOfIndex(bottomRowIndex, columnIndex, out latestIndex));
+            result.Add(GetNumberOfIndex(rowIndex, columnIndex));
+        }
+        else
+        {
+            if (((columnIndex - 1) > 0) && row[columnIndex - 1].IsNumber)
+            {
+                result.Add(GetNumberOfIndex(rowIndex, columnIndex - 1));
+            }
+
+            if (((columnIndex + 1) < row.Length) && row[columnIndex + 1].IsNumber)
+            {
+                result.Add(GetNumberOfIndex(rowIndex, columnIndex + 1));
+            }
         }
 
-        if ((!result.Any() || result[0] == -1) && ((columnIndex - 1) > 0) && row[columnIndex - 1].IsNumber)
-        {
-            result.Add(GetNumberOfIndex(bottomRowIndex, columnIndex - 1, out latestIndex));
-        }
-        if (latestIndex <= columnIndex && ((columnIndex + 1) < row.Length) && row[columnIndex + 1].IsNumber)
-        {
-            result.Add(GetNumberOfIndex(bottomRowIndex, columnIndex + 1, out _));
-        }
         return result.ToArray();
     }
 
-    private long[] GetUpperNumbers(int rowIndex, int columnIndex)
-    {
-        var result = new List<long>();
-        var upperRowIndex = rowIndex - 1;
-        if (upperRowIndex < 0)
-        {
-            return result.ToArray();
-        }
-        var row = Entries[upperRowIndex];
-        var latestIndex = columnIndex;
-        if (row[columnIndex].IsNumber)
-        {
-            result.Add(GetNumberOfIndex(upperRowIndex, columnIndex, out latestIndex));
-        }
-
-        if ((!result.Any() || result[0] == -1) && (columnIndex - 1 > 0) && row[columnIndex - 1].IsNumber)
-        {
-            result.Add(GetNumberOfIndex(upperRowIndex, columnIndex - 1, out latestIndex));
-        }
-        if (latestIndex <= columnIndex && ((columnIndex + 1) < row.Length) && row[columnIndex + 1].IsNumber)
-        {
-            result.Add(GetNumberOfIndex(upperRowIndex, columnIndex + 1, out _));
-        }
-        return result.ToArray();
-    }
 
     public int CalcSumOfValidEntries()
     {
